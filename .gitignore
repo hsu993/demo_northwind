@@ -1,3 +1,7 @@
 NorthWindDemo.Web/bin/
 NorthWindDemo.Web/obj/
+NorthWindDemo.Models/bin/
+NorthWindDemo.Models/obj/
+NorthWindDemo.Service/bin/
+NorthWindDemo.Service/obj/
 .vs/
