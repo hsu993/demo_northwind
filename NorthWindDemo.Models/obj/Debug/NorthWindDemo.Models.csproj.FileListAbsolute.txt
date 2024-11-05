@@ -1,0 +1,6 @@
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\bin\Debug\NorthWindDemo.Models.dll
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\bin\Debug\NorthWindDemo.Models.pdb
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\obj\Debug\NorthWindDemo.Models.csproj.AssemblyReference.cache
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\obj\Debug\NorthWindDemo.Models.csproj.CoreCompileInputs.cache
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\obj\Debug\NorthWindDemo.Models.dll
+D:\0_project\source\repos\NorthWindDemo.Web\NorthWindDemo.Models\obj\Debug\NorthWindDemo.Models.pdb
