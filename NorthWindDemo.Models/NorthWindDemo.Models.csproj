@@ -59,7 +59,6 @@
     <Compile Include="Category_Sales_for_1997.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Class1.cs" />
     <Compile Include="Current_Product_List.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
@@ -87,6 +86,7 @@
     <Compile Include="Employee_Sales_by_Country_Result.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Interface\IRepository.cs" />
     <Compile Include="Invoices.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
@@ -136,6 +136,7 @@
     <Compile Include="Region.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repository\DataRepository.cs" />
     <Compile Include="SalesByCategory_Result.cs">
       <DependentUpon>NorthWindDB.tt</DependentUpon>
     </Compile>
@@ -195,5 +196,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
