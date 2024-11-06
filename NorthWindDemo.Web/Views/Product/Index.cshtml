@@ -8,10 +8,19 @@
     <link href="~/Content/Product/index.css" rel="stylesheet" />
 }
 <h2>Product Index</h2>
-
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @*@Html.ActionLink("Create New", "Create")*@
+    <a class="btn btn-success" href="@Url.Action("Create", new {category=ViewBag.category})">
+        <i class="icon-pancil"></i> Create New
+    </a>
 </p>
+@using (Html.BeginForm("ProductsOfCategory", "Product", FormMethod.Post, new { enctype = "multipart/form-data", data_ajax = "false" }))
+{
+    @Html.DropDownList("category", ViewBag.CategorySelectList as List<SelectListItem>)
+    <input type="submit" value="Search" />
+}
+
+
 <table class="table">
     <tr>
         <th>
@@ -41,7 +50,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Suppliers.CompanyName)
         </th>
-        <th></th>
+        <th>Options</th>
     </tr>
 
     @foreach (var item in Model)

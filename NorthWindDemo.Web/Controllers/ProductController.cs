@@ -68,6 +68,13 @@ namespace NorthWindDemo.Web.Controllers
 
             return View(products);
         }
+
+        [HttpPost]
+        public ActionResult ProductsOfCategory(string category)
+        {
+            return RedirectToAction("Index", new { category = category });
+        }
+
         /// <summary>
         /// CategorySelectList
         /// </summary>

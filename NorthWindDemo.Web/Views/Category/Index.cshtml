@@ -11,7 +11,10 @@
 <h2>Category Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @*@Html.ActionLink("Create New", "Create")*@
+    <a class="btn btn-success" href="@Url.Action("Create", new {category=ViewBag.category})">
+        <i class="icon-pancil"></i> Create New
+    </a>
 </p>
 <table class="table">
     <tr>
