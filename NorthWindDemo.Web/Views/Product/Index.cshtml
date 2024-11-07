@@ -1,4 +1,5 @@
-﻿@model IEnumerable<NorthWindDemo.Models.Products>
+﻿@*@model IEnumerable<NorthWindDemo.ViewModels.ProductIndexViewModel>*@
+@model NorthWindDemo.ViewModels.ProductIndexViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -10,13 +11,13 @@
 <h2>Product Index</h2>
 <p>
     @*@Html.ActionLink("Create New", "Create")*@
-    <a class="btn btn-success" href="@Url.Action("Create", new {category=ViewBag.category})">
+    <a class="btn btn-success" href="@Url.Action("Create", new {category = Model.Category})">
         <i class="icon-pancil"></i> Create New
     </a>
 </p>
 @using (Html.BeginForm("ProductsOfCategory", "Product", FormMethod.Post, new { enctype = "multipart/form-data", data_ajax = "false" }))
 {
-    @Html.DropDownList("category", ViewBag.CategorySelectList as List<SelectListItem>)
+    @Html.DropDownList("category", Model.CategorySelectList as List<SelectListItem>)
     <input type="submit" value="Search" />
 }
 
@@ -24,36 +25,36 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ProductName)
+            @Html.DisplayNameFor(model => model.Products.ProductName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.QuantityPerUnit)
+            @Html.DisplayNameFor(model => model.Products.QuantityPerUnit)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UnitPrice)
+            @Html.DisplayNameFor(model => model.Products.UnitPrice)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UnitsInStock)
+            @Html.DisplayNameFor(model => model.Products.UnitsInStock)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UnitsOnOrder)
+            @Html.DisplayNameFor(model => model.Products.UnitsOnOrder)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ReorderLevel)
+            @Html.DisplayNameFor(model => model.Products.ReorderLevel)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Discontinued)
+            @Html.DisplayNameFor(model => model.Products.Discontinued)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Categories.CategoryName)
+            @Html.DisplayNameFor(model => model.Products.Categories.CategoryName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Suppliers.CompanyName)
+            @Html.DisplayNameFor(model => model.Products.Suppliers.CompanyName)
         </th>
         <th>Options</th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.ProductsData)
     {
         <tr>
             <td>
@@ -84,9 +85,9 @@
                 @Html.DisplayFor(modelItem => item.Suppliers.CompanyName)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID })
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID, category = Model.Category }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProductID, category = Model.Category }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID, category = Model.Category })
             </td>
         </tr>
     }

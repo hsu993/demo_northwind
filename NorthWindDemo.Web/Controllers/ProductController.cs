@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using NorthWindDemo.Models;
 using NorthWindDemo.Service;
 using NorthWindDemo.Service.Interface;
+using NorthWindDemo.ViewModels;
 
 namespace NorthWindDemo.Web.Controllers
 {
@@ -50,11 +51,9 @@ namespace NorthWindDemo.Web.Controllers
         // GET: Product
         public ActionResult Index(string category = "")
         {
-            //var products = db.Products.Include(p => p.Categories).Include(p => p.Suppliers);
-            //return View(products.ToList());
-            int categoryID = 1;
+            ProductIndexViewModel viewModel = new ProductIndexViewModel();
 
-            ViewBag.CategorySelectList = int.TryParse(category, out categoryID)
+            viewModel.CategorySelectList = int.TryParse(category, out int categoryID)
                 ? this.CategorySelectList(categoryID.ToString())
                 : this.CategorySelectList("");
 
@@ -63,10 +62,10 @@ namespace NorthWindDemo.Web.Controllers
                 : productService.GetByCategory(categoryID);
 
             var products = result.OrderByDescending(x => x.ProductID).ToList();
+            viewModel.ProductsData = products;
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
 
-            ViewBag.Category = category;
-
-            return View(products);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -80,7 +79,7 @@ namespace NorthWindDemo.Web.Controllers
         /// </summary>
         /// <param name="selectedValue">The selected value.</param>
         /// <returns></returns>
-        public List<SelectListItem> CategorySelectList(string selectedValue = "")
+        private List<SelectListItem> CategorySelectList(string selectedValue = "")
         {
             List<SelectListItem> items = new List<SelectListItem>();
             items.Add(new SelectListItem()
@@ -104,9 +103,39 @@ namespace NorthWindDemo.Web.Controllers
             return items;
         }
 
+        /// <summary>
+        /// CategorySelectList
+        /// </summary>
+        /// <param name="selectedValue">The selected value.</param>
+        /// <returns></returns>
+        private List<SelectListItem> SupplierSelectList(string selectedValue = "")
+        {
+            List<SelectListItem> items = new List<SelectListItem>();
+            items.Add(new SelectListItem()
+            {
+                Text = "All Supplier",
+                Value = "",
+                Selected = selectedValue.Equals("", StringComparison.OrdinalIgnoreCase)
+            });
+
+            var suppliers = suppliersService.GetAll().OrderBy(x => x.SupplierID);
+
+            foreach (var s in suppliers)
+            {
+                items.Add(new SelectListItem()
+                {
+                    Text = s.CompanyName,
+                    Value = s.SupplierID.ToString(),
+                    Selected = selectedValue.Equals(s.SupplierID.ToString())
+                });
+            }
+            return items;
+        }
+
         // GET: Product/Details/5
         public ActionResult Details(int? id, string category, string supplier)
         {
+            ProductDetailsViewModel viewModel = new ProductDetailsViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
             Products product = productService.GetByID(id.Value);
@@ -114,25 +143,30 @@ namespace NorthWindDemo.Web.Controllers
             {
                 return HttpNotFound();
             }
+            viewModel.Products = product;
 
-            ViewBag.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
-            ViewBag.Supplier = string.IsNullOrWhiteSpace(supplier) ? "" : supplier;
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            viewModel.Supplier = string.IsNullOrWhiteSpace(supplier) ? "" : supplier;
 
-            return View(product);
+            return View(viewModel);
         }
 
         // GET: Product/Create
         public ActionResult Create(string category, string supplier)
         {
-            //ViewBag.CategoryID = new SelectList(db.Categories, "CategoryID", "CategoryName");
-            //ViewBag.SupplierID = new SelectList(db.Suppliers, "SupplierID", "CompanyName");
-            //return View();
-            ViewBag.CategoryID = new SelectList(this.Categories, "CategoryID", "CategoryName");
-            ViewBag.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            ProductEditViewModel viewModel = new ProductEditViewModel();
 
-            ViewBag.SupplierID = new SelectList(this.Suppliers, "SupplierID", "CompanyName");
-            ViewBag.Supplier = string.IsNullOrWhiteSpace(supplier) ? "" : supplier;
-            return View();
+            viewModel.CategorySelectList = int.TryParse(category, out int categoryID)
+                ? this.CategorySelectList(categoryID.ToString())
+                : this.CategorySelectList("");
+
+            viewModel.SupplierSelectList = int.TryParse(supplier, out int supplierID)
+                ? this.SupplierSelectList(supplierID.ToString())
+                : this.SupplierSelectList("");
+
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            viewModel.Supplier = string.IsNullOrWhiteSpace(supplier) ? "" : supplier;
+            return View(viewModel);
         }
 
         // POST: Product/Create
@@ -140,23 +174,31 @@ namespace NorthWindDemo.Web.Controllers
         // 如需詳細資料，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProductID,ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] Products products, string category)
+        //public ActionResult Create([Bind(Include = "ProductID,ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] Products products, string category, ProductCreateViewModel viewModel)
+        public ActionResult Create(ProductEditViewModel viewModel, string category)
         {
             if (ModelState.IsValid)
             {
-                this.productService.Create(products);
+                this.productService.Create(viewModel.Products);
                 return RedirectToAction("Index", new { category = category });
             }
 
-            ViewBag.CategoryID = new SelectList(this.Categories, "CategoryID", "CategoryName", products.CategoryID);
-            ViewBag.SupplierID = new SelectList(this.Suppliers, "SupplierID", "CompanyName", products.SupplierID);
+            viewModel.CategorySelectList = viewModel.Products.CategoryID != null
+                ? this.CategorySelectList(viewModel.Products.CategoryID.ToString())
+                : this.CategorySelectList("");
 
-            return View(products);
+            viewModel.SupplierSelectList = viewModel.Products.SupplierID != null
+                ? this.SupplierSelectList(viewModel.Products.SupplierID.ToString())
+                : this.SupplierSelectList("");
+
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            return View(viewModel);
         }
 
         // GET: Product/Edit/5
         public ActionResult Edit(int? id, string category, string supplier)
         {
+            ProductEditViewModel viewModel = new ProductEditViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
             Products product = this.productService.GetByID(id.Value);
@@ -164,14 +206,18 @@ namespace NorthWindDemo.Web.Controllers
             {
                 return HttpNotFound();
             }
+            viewModel.Products = product;
+            viewModel.CategorySelectList = int.TryParse(category, out int categoryID)
+                ? this.CategorySelectList(categoryID.ToString())
+                : this.CategorySelectList("");
 
-            ViewBag.CategoryID = new SelectList(this.Categories, "CategoryID", "CategoryName", product.CategoryID);
-            ViewBag.Category = string.IsNullOrWhiteSpace(category) ? "all" : category;
+            viewModel.SupplierSelectList = int.TryParse(supplier, out int supplierID)
+                ? this.SupplierSelectList(supplierID.ToString())
+                : this.SupplierSelectList("");
 
-            ViewBag.SupplierID = new SelectList(this.Suppliers, "SupplierID", "CompanyName", product.SupplierID);
-            ViewBag.Supplier = string.IsNullOrWhiteSpace(supplier) ? "all" : supplier;
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
 
-            return View(product);
+            return View(viewModel);
         }
 
         // POST: Product/Edit/5
@@ -179,23 +225,31 @@ namespace NorthWindDemo.Web.Controllers
         // 如需詳細資料，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] Products products, string category)
+        //public ActionResult Edit([Bind(Include = "ProductID,ProductName,SupplierID,CategoryID,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] Products products, string category)
+        public ActionResult Edit(ProductEditViewModel viewModel, string category)
         {
             if (ModelState.IsValid)
             {
-                this.productService.Update(products);
+                this.productService.Update(viewModel.Products);
                 return RedirectToAction("Index", new { category = category });
             }
 
-            ViewBag.CategoryID = new SelectList(this.Categories, "CategoryID", "CategoryName", products.CategoryID);
-            ViewBag.SupplierID = new SelectList(this.Suppliers, "SupplierID", "CompanyName", products.SupplierID);
+            viewModel.CategorySelectList = viewModel.Products.CategoryID != null
+                ? this.CategorySelectList(viewModel.Products.CategoryID.ToString())
+                : this.CategorySelectList("");
 
-            return View(products);
+            viewModel.SupplierSelectList = viewModel.Products.SupplierID != null
+                ? this.SupplierSelectList(viewModel.Products.SupplierID.ToString())
+                : this.SupplierSelectList("");
+
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            return View(viewModel);
         }
 
         // GET: Product/Delete/5
         public ActionResult Delete(int? id, string category, string supplier)
         {
+            ProductDeleteViewModel viewModel = new ProductDeleteViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
             Products product = this.productService.GetByID(id.Value);
@@ -204,10 +258,11 @@ namespace NorthWindDemo.Web.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.Category = string.IsNullOrWhiteSpace(category) ? "all" : category;
-            ViewBag.Supplier = string.IsNullOrWhiteSpace(supplier) ? "all" : supplier;
+            viewModel.Products = product;
+            viewModel.Category = string.IsNullOrWhiteSpace(category) ? "" : category;
+            //ViewBag.Supplier = string.IsNullOrWhiteSpace(supplier) ? "" : supplier;
 
-            return View(product);
+            return View(viewModel);
         }
 
         // POST: Product/Delete/5

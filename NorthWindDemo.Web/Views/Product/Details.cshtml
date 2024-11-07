@@ -1,4 +1,4 @@
-﻿@model NorthWindDemo.Models.Products
+﻿@model NorthWindDemo.ViewModels.ProductDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -12,80 +12,80 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.ProductName)
+            @Html.DisplayNameFor(model => model.Products.ProductName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ProductName)
+            @Html.DisplayFor(model => model.Products.ProductName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.QuantityPerUnit)
+            @Html.DisplayNameFor(model => model.Products.QuantityPerUnit)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.QuantityPerUnit)
+            @Html.DisplayFor(model => model.Products.QuantityPerUnit)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.UnitPrice)
+            @Html.DisplayNameFor(model => model.Products.UnitPrice)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UnitPrice)
+            @Html.DisplayFor(model => model.Products.UnitPrice)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.UnitsInStock)
+            @Html.DisplayNameFor(model => model.Products.UnitsInStock)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UnitsInStock)
+            @Html.DisplayFor(model => model.Products.UnitsInStock)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.UnitsOnOrder)
+            @Html.DisplayNameFor(model => model.Products.UnitsOnOrder)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UnitsOnOrder)
+            @Html.DisplayFor(model => model.Products.UnitsOnOrder)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ReorderLevel)
+            @Html.DisplayNameFor(model => model.Products.ReorderLevel)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ReorderLevel)
+            @Html.DisplayFor(model => model.Products.ReorderLevel)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Discontinued)
+            @Html.DisplayNameFor(model => model.Products.Discontinued)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Discontinued)
+            @Html.DisplayFor(model => model.Products.Discontinued)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Categories.CategoryName)
+            @Html.DisplayNameFor(model => model.Products.Categories.CategoryName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Categories.CategoryName)
+            @Html.DisplayFor(model => model.Products.Categories.CategoryName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Suppliers.CompanyName)
+            @Html.DisplayNameFor(model => model.Products.Suppliers.CompanyName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Suppliers.CompanyName)
+            @Html.DisplayFor(model => model.Products.Suppliers.CompanyName)
         </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProductID }, new { @class = "btn btn-outline-warning" }) |
-    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline-secondary" })
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Products.ProductID, category = Model.Category }, new { @class = "btn btn-outline-warning" }) |
+    @Html.ActionLink("Back to List", "Index", new { category = Model.Category }, new { @class = "btn btn-outline-secondary" })
 </p>
