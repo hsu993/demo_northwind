@@ -5,3 +5,5 @@ NorthWindDemo.Models/obj/
 NorthWindDemo.Service/bin/
 NorthWindDemo.Service/obj/
 .vs/
+NorthWindDemo.Web.Tests/obj/
+NorthWindDemo.Web.Tests/bin/
