@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using NorthWindDemo.Models;
 using NorthWindDemo.Service;
 using NorthWindDemo.Service.Interface;
@@ -16,10 +17,22 @@ namespace NorthWindDemo.Web.Controllers
     {
         //private northwindDBEntities db = new northwindDBEntities();
 
-        private IProductService productService;
-        private ICategoryService categoryService;
-        private ISuppliersService suppliersService;
+        //private IProductService productService;
+        //private ICategoryService categoryService;
+        //private ISuppliersService suppliersService;
 
+        private IProductService _productService;
+        private ICategoryService _categoryService;
+        private ISuppliersService _suppliersService;
+        public ProductController(
+            IProductService productService,
+            ICategoryService categoryService,
+            ISuppliersService suppliersService)
+        {
+            this._productService = productService;
+            this._categoryService = categoryService;
+            this._suppliersService = suppliersService;
+        }
         /// <summary>
         /// 取得所有類別資料
         /// </summary>
@@ -27,7 +40,7 @@ namespace NorthWindDemo.Web.Controllers
         {
             get
             {
-                return categoryService.GetAll();
+                return _categoryService.GetAll();
             }
         }
         /// <summary>
@@ -37,16 +50,16 @@ namespace NorthWindDemo.Web.Controllers
         {
             get
             {
-                return suppliersService.GetAll();
+                return _suppliersService.GetAll();
             }
         }
 
-        public ProductController()
-        {
-            this.productService = new ProductService();
-            this.categoryService = new CategoryService();
-            this.suppliersService = new SuppliersService();
-        }
+        //public ProductController()
+        //{
+        //    this.productService = new ProductService();
+        //    this.categoryService = new CategoryService();
+        //    this.suppliersService = new SuppliersService();
+        //}
 
         // GET: Product
         public ActionResult Index(string category = "")
@@ -58,8 +71,8 @@ namespace NorthWindDemo.Web.Controllers
                 : this.CategorySelectList("");
 
             var result = category.Equals("", StringComparison.OrdinalIgnoreCase)
-                ? productService.GetAll()
-                : productService.GetByCategory(categoryID);
+                ? _productService.GetAll()
+                : _productService.GetByCategory(categoryID);
 
             var products = result.OrderByDescending(x => x.ProductID).ToList();
             viewModel.ProductsData = products;
@@ -89,7 +102,7 @@ namespace NorthWindDemo.Web.Controllers
                 Selected = selectedValue.Equals("", StringComparison.OrdinalIgnoreCase)
             });
 
-            var categories = categoryService.GetAll().OrderBy(x => x.CategoryID);
+            var categories = _categoryService.GetAll().OrderBy(x => x.CategoryID);
 
             foreach (var c in categories)
             {
@@ -118,7 +131,7 @@ namespace NorthWindDemo.Web.Controllers
                 Selected = selectedValue.Equals("", StringComparison.OrdinalIgnoreCase)
             });
 
-            var suppliers = suppliersService.GetAll().OrderBy(x => x.SupplierID);
+            var suppliers = _suppliersService.GetAll().OrderBy(x => x.SupplierID);
 
             foreach (var s in suppliers)
             {
@@ -138,7 +151,7 @@ namespace NorthWindDemo.Web.Controllers
             ProductDetailsViewModel viewModel = new ProductDetailsViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
-            Products product = productService.GetByID(id.Value);
+            Products product = _productService.GetByID(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -179,7 +192,7 @@ namespace NorthWindDemo.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                this.productService.Create(viewModel.Products);
+                this._productService.Create(viewModel.Products);
                 return RedirectToAction("Index", new { category = category });
             }
 
@@ -201,7 +214,7 @@ namespace NorthWindDemo.Web.Controllers
             ProductEditViewModel viewModel = new ProductEditViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
-            Products product = this.productService.GetByID(id.Value);
+            Products product = this._productService.GetByID(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -230,7 +243,7 @@ namespace NorthWindDemo.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                this.productService.Update(viewModel.Products);
+                this._productService.Update(viewModel.Products);
                 return RedirectToAction("Index", new { category = category });
             }
 
@@ -252,7 +265,7 @@ namespace NorthWindDemo.Web.Controllers
             ProductDeleteViewModel viewModel = new ProductDeleteViewModel();
             if (!id.HasValue) return RedirectToAction("index");
 
-            Products product = this.productService.GetByID(id.Value);
+            Products product = this._productService.GetByID(id.Value);
             if (product == null)
             {
                 return HttpNotFound();
@@ -271,7 +284,7 @@ namespace NorthWindDemo.Web.Controllers
         public ActionResult DeleteConfirmed(int id, string category)
         {
             //Products product = this.productService.GetByID(id);
-            this.productService.Delete(id);
+            this._productService.Delete(id);
 
             return RedirectToAction("Index", new { category = category });
         }

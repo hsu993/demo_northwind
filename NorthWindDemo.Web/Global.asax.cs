@@ -18,6 +18,9 @@ namespace NorthWindDemo.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // 執行 Unity.MVC4 初始化
+            Bootstrapper.Initialise();
         }
     }
 }

@@ -14,17 +14,23 @@ namespace NorthWindDemo.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private ICategoryService categoryService;
-        public CategoryController()
+        //private ICategoryService categoryService;
+        //public CategoryController()
+        //{
+        //    this.categoryService = new CategoryService();
+        //}
+
+        private ICategoryService _categoryService;
+        public CategoryController(ICategoryService service)
         {
-            this.categoryService = new CategoryService();
+            this._categoryService = service;
         }
 
 
         // GET: Category
         public ActionResult Index()
         {
-            var categories = this.categoryService.GetAll()
+            var categories = this._categoryService.GetAll()
                 .OrderByDescending(x => x.CategoryID)
                 .ToList();
 
@@ -40,7 +46,7 @@ namespace NorthWindDemo.Web.Controllers
             }
             else
             {
-                var category = this.categoryService.GetByID(id.Value);
+                var category = this._categoryService.GetByID(id.Value);
                 return View(category);
             }
         }
@@ -69,7 +75,7 @@ namespace NorthWindDemo.Web.Controllers
                             category.Picture = binaryReader.ReadBytes(objFiles.ContentLength);
                         }
                     }
-                    this.categoryService.Create(category);
+                    this._categoryService.Create(category);
                     return RedirectToAction("index");
                 }
                 else
@@ -92,7 +98,7 @@ namespace NorthWindDemo.Web.Controllers
             }
             else
             {
-                var category = this.categoryService.GetByID(id.Value);
+                var category = this._categoryService.GetByID(id.Value);
                 return View(category);
             }
         }
@@ -115,7 +121,7 @@ namespace NorthWindDemo.Web.Controllers
                             category.Picture = binaryReader.ReadBytes(objFiles.ContentLength);
                         }
                     }
-                    this.categoryService.Update(category);
+                    this._categoryService.Update(category);
                     return View(category);
                 }
                 else
@@ -138,7 +144,7 @@ namespace NorthWindDemo.Web.Controllers
             }
             else
             {
-                var category = this.categoryService.GetByID(id.Value);
+                var category = this._categoryService.GetByID(id.Value);
                 return View(category);
             }
         }
@@ -150,7 +156,7 @@ namespace NorthWindDemo.Web.Controllers
             try
             {
                 // TODO: Add delete logic here
-                this.categoryService.Delete(id);
+                this._categoryService.Delete(id);
                 return RedirectToAction("Index");
             }
             catch

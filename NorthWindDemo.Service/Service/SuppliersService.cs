@@ -13,7 +13,12 @@ namespace NorthWindDemo.Service
 {
     public class SuppliersService : ISuppliersService
     {
-        private IRepository<Suppliers> repository = new DataRepository<Suppliers>();
+        //private IRepository<Suppliers> repository = new DataRepository<Suppliers>();
+        private IRepository<Suppliers> _repository;
+        public SuppliersService(IRepository<Suppliers> repository)
+        {
+            this._repository = repository;
+        }
 
         public IResult Create(Suppliers instance)
         {
@@ -25,7 +30,7 @@ namespace NorthWindDemo.Service
             IResult result = new Result(false);
             try
             {
-                this.repository.Create(instance);
+                this._repository.Create(instance);
                 result.Success = true;
             }
             catch (Exception ex)
@@ -47,7 +52,7 @@ namespace NorthWindDemo.Service
             try
             {
                 var instance = this.GetByID(supplierID);
-                this.repository.Delete(instance);
+                this._repository.Delete(instance);
                 result.Success = true;
             }
             catch (Exception ex)
@@ -59,17 +64,17 @@ namespace NorthWindDemo.Service
 
         public IEnumerable<Suppliers> GetAll()
         {
-            return this.repository.GetAll();
+            return this._repository.GetAll();
         }
 
         public Suppliers GetByID(int supplierID)
         {
-            return this.repository.Get(x => x.SupplierID == supplierID);
+            return this._repository.Get(x => x.SupplierID == supplierID);
         }
 
         public bool IsExists(int supplierID)
         {
-            return this.repository.GetAll().Any(x => x.SupplierID == supplierID);
+            return this._repository.GetAll().Any(x => x.SupplierID == supplierID);
         }
 
         public IResult Update(Suppliers instance)
@@ -82,7 +87,7 @@ namespace NorthWindDemo.Service
             IResult result = new Result(false);
             try
             {
-                this.repository.Update(instance);
+                this._repository.Update(instance);
                 result.Success = true;
             }
             catch (Exception ex)
